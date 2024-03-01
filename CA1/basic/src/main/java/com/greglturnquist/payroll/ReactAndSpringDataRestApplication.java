@@ -21,8 +21,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author Greg Turnquist
  */
-// tag::code[]
+
 @SpringBootApplication
+
+// The last step needed to get a fully operational REST API off the ground
+// is to write a public static void main method by using Spring Boot, as follows:
 public class ReactAndSpringDataRestApplication {
 
 	public static void main(String[] args) {

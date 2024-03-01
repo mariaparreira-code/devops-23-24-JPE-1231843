@@ -34084,7 +34084,22 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function (r
 "use strict";
 
 
-// tag::vars[]
+/*
+app.js is the proverbial public static void main() of our
+JavaScript application.
+webpack must know this in order to know what to launch when
+the final bundle is loaded by the browser.
+ */
+
+/*
+Creates sourcemaps so that, when you are debugging
+JS code in the browser, you can link back to original source code.
+ */
+
+/*
+React is one of the main libraries from Facebook used to build this app.
+
+ */
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -34101,7 +34116,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Objec
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js"); // <1>
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js"); // <2>
 var client = __webpack_require__(/*! ./client */ "./src/main/js/client.js"); // <3>
-// end::vars[]
 
 // tag::app[]
 var App = /*#__PURE__*/function (_React$Component) {
@@ -34158,7 +34172,7 @@ var EmployeeList = /*#__PURE__*/function (_React$Component2) {
           employee: employee
         });
       });
-      return /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "First Name"), /*#__PURE__*/React.createElement("th", null, "Last Name"), /*#__PURE__*/React.createElement("th", null, "Description")), employees));
+      return /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "First Name"), /*#__PURE__*/React.createElement("th", null, "Last Name"), /*#__PURE__*/React.createElement("th", null, "Description"), /*#__PURE__*/React.createElement("th", null, "JobYears")), employees));
     }
   }]);
   return EmployeeList;
@@ -34173,7 +34187,7 @@ var Employee = /*#__PURE__*/function (_React$Component3) {
   _createClass(Employee, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, this.props.employee.firstName), /*#__PURE__*/React.createElement("td", null, this.props.employee.lastName), /*#__PURE__*/React.createElement("td", null, this.props.employee.description));
+      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, this.props.employee.firstName), /*#__PURE__*/React.createElement("td", null, this.props.employee.lastName), /*#__PURE__*/React.createElement("td", null, this.props.employee.description), /*#__PURE__*/React.createElement("td", null, this.props.employee.jobYears));
     }
   }]);
   return Employee;

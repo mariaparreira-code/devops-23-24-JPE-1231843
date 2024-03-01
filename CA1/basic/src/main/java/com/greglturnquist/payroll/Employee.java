@@ -24,23 +24,50 @@ import javax.persistence.Id;
 /**
  * @author Greg Turnquist
  */
-// tag::code[]
+
 @Entity // <1>
+
 public class Employee {
 
 	private @Id @GeneratedValue Long id; // <2>
 	private String firstName;
 	private String lastName;
 	private String description;
+	private int jobYears;
 
-	private Employee() {}
 
-	public Employee(String firstName, String lastName, String description) {
+
+	public Employee(String firstName, String lastName, String description, int jobYears) throws InstantiationException{
+		if( areConstrutorArgumentsValid(firstName,lastName,description,jobYears) == false ) {
+			throw (new InstantiationException("Invalid arguments"));
+		}
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
+		this.jobYears = jobYears;
 	}
 
+	public Employee() {}
+
+	private boolean areConstrutorArgumentsValid(String firstName, String lastName, String description, int jobYears){
+		        if (firstName == null || firstName.isEmpty()){
+					return false;
+				}
+				if(lastName == null || lastName.isEmpty()){
+					return false;
+				}
+				if(description == null || description.isEmpty()){
+					return false;
+				}
+				if(jobYears < 0 || jobYears > 40){
+					return false;
+				}
+				return true;
+	}
+
+
+	//Esta função em Java é a implementação do método equals da classe Object.
+	//O método equals é usado para comparar dois objetos.
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -49,13 +76,14 @@ public class Employee {
 		return Objects.equals(id, employee.id) &&
 			Objects.equals(firstName, employee.firstName) &&
 			Objects.equals(lastName, employee.lastName) &&
-			Objects.equals(description, employee.description);
+			Objects.equals(description, employee.description) &&
+			Objects.equals(jobYears, employee.jobYears);
 	}
 
 	@Override
 	public int hashCode() {
 
-		return Objects.hash(id, firstName, lastName, description);
+		return Objects.hash(id, firstName, lastName, description, jobYears);
 	}
 
 	public Long getId() {
@@ -90,6 +118,17 @@ public class Employee {
 		this.description = description;
 	}
 
+
+	public int getJobYears() {
+		return jobYears;
+	}
+
+	public void setJobYears(int jobYears) {
+		this.jobYears = jobYears;
+	}
+
+
+	//descrição do objeto numa string
 	@Override
 	public String toString() {
 		return "Employee{" +
@@ -97,6 +136,7 @@ public class Employee {
 			", firstName='" + firstName + '\'' +
 			", lastName='" + lastName + '\'' +
 			", description='" + description + '\'' +
+			", jobYears='" + jobYears + '\'' +
 			'}';
 	}
 }
