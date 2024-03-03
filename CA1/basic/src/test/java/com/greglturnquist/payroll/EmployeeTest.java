@@ -48,6 +48,24 @@ public class EmployeeTest {
     }
 
     @Test
+    void instanceEmployeeInvalidEmail() throws InstantiationException {
+        //arrange
+        String firstName = null;
+        String lastName = "maria";
+        String description = "Student";
+        int jobYears = 1;
+        String email = "maria.com";
+        String expectedMessage = "Invalid arguments";
+        //act
+        Exception exception = assertThrows(InstantiationException.class, () ->
+                new Employee(firstName,lastName,description,jobYears,email)
+        );
+        String actualMessage = exception.getMessage();
+        //assert
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     void instanceEmployeeInvalidDescription() throws InstantiationException {
         //arrange
         String firstName = "Maria";

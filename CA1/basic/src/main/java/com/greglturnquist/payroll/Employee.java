@@ -42,6 +42,9 @@ public class Employee {
 		if( areConstrutorArgumentsValid(firstName,lastName,description,jobYears) == false ) {
 			throw (new InstantiationException("Invalid arguments"));
 		}
+		if (isValidEmail(email)==false) {
+			throw (new InstantiationException("Invalid arguments"));
+		}
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.description = description;
@@ -67,6 +70,9 @@ public class Employee {
 		return true;
 	}
 
+	  private boolean isValidEmail(String email) {
+		  return email != null && email.contains("@");
+	  }
 
 	//Esta função em Java é a implementação do método equals da classe Object.
 	//O método equals é usado para comparar dois objetos.
