@@ -13,17 +13,20 @@ public class EmployeeTest {
         String lastName = "Parreira";
         String description = "Student";
         int jobYears = 1;
-        Employee testEmployee = new Employee(firstName,lastName,description,jobYears);
+        String email = "maria@gmail.com";
+        Employee testEmployee = new Employee(firstName,lastName,description,jobYears,email);
         //act
         testEmployee.getJobYears();
         testEmployee.getFirstName();
         testEmployee.getLastName();
         testEmployee.getDescription();
+        testEmployee.getEmail();
         //assert
         assertEquals(firstName, testEmployee.getFirstName());
         assertEquals(lastName, testEmployee.getLastName());
         assertEquals(description, testEmployee.getDescription());
         assertEquals(jobYears, testEmployee.getJobYears());
+        assertEquals(email, testEmployee.getEmail());
     }
 
     @Test
@@ -33,10 +36,11 @@ public class EmployeeTest {
         String lastName = "";
         String description = "Student";
         int jobYears = 1;
+        String email = "maria@gmail.com";
         String expectedMessage = "Invalid arguments";
         //act
         Exception exception = assertThrows(InstantiationException.class, () ->
-                new Employee(firstName,lastName,description,jobYears)
+                new Employee(firstName,lastName,description,jobYears,email)
         );
         String actualMessage = exception.getMessage();
         //assert
@@ -50,10 +54,11 @@ public class EmployeeTest {
         String lastName = "Parreira";
         String description = "";
         int jobYears = 1;
+        String email = "maria@gmail.com";
         String expectedMessage = "Invalid arguments";
         //act
         Exception exception = assertThrows(InstantiationException.class, () ->
-                new Employee(firstName,lastName,description,jobYears)
+                new Employee(firstName,lastName,description,jobYears,email)
         );
         String actualMessage = exception.getMessage();
         //assert
@@ -67,17 +72,15 @@ public class EmployeeTest {
         String lastName = "Parreira";
         String description = "Student";
         int jobYears = -1;
+        String email = "maria@gmail.com";
         String expectedMessage = "Invalid arguments";
         //act
         Exception exception = assertThrows(InstantiationException.class, () ->
-                new Employee(firstName, lastName, description, jobYears)
+                new Employee(firstName, lastName, description, jobYears,email)
         );
         String actualMessage = exception.getMessage();
         //assert
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    
-
 
 }

@@ -34,10 +34,11 @@ public class Employee {
 	private String lastName;
 	private String description;
 	private int jobYears;
+	private String email;
 
 
 
-	public Employee(String firstName, String lastName, String description, int jobYears) throws InstantiationException{
+	public Employee(String firstName, String lastName, String description, int jobYears, String email) throws InstantiationException{
 		if( areConstrutorArgumentsValid(firstName,lastName,description,jobYears) == false ) {
 			throw (new InstantiationException("Invalid arguments"));
 		}
@@ -45,24 +46,25 @@ public class Employee {
 		this.lastName = lastName;
 		this.description = description;
 		this.jobYears = jobYears;
+		this.email = email;
 	}
 
 	public Employee() {}
 
 	private boolean areConstrutorArgumentsValid(String firstName, String lastName, String description, int jobYears){
-		        if (firstName == null || firstName.isEmpty()){
-					return false;
-				}
-				if(lastName == null || lastName.isEmpty()){
-					return false;
-				}
-				if(description == null || description.isEmpty()){
-					return false;
-				}
-				if(jobYears < 0 || jobYears > 40){
-					return false;
-				}
-				return true;
+		if (firstName == null || firstName.isEmpty()){
+			return false;
+		}
+		if(lastName == null || lastName.isEmpty()){
+			return false;
+		}
+		if(description == null || description.isEmpty()){
+			return false;
+		}
+		if(jobYears < 0 || jobYears > 40){
+			return false;
+		}
+		return true;
 	}
 
 
@@ -77,7 +79,8 @@ public class Employee {
 			Objects.equals(firstName, employee.firstName) &&
 			Objects.equals(lastName, employee.lastName) &&
 			Objects.equals(description, employee.description) &&
-			Objects.equals(jobYears, employee.jobYears);
+			Objects.equals(jobYears, employee.jobYears) &&
+			Objects.equals(email, employee.email);
 	}
 
 	@Override
@@ -120,11 +123,19 @@ public class Employee {
 
 
 	public int getJobYears() {
-		return jobYears;
+		return this.jobYears;
 	}
 
 	public void setJobYears(int jobYears) {
 		this.jobYears = jobYears;
+	}
+
+	public String getEmail(){
+		return this.email;
+	}
+
+	public void setEmail(String email){
+		this.email = email;
 	}
 
 
@@ -137,6 +148,7 @@ public class Employee {
 			", lastName='" + lastName + '\'' +
 			", description='" + description + '\'' +
 			", jobYears='" + jobYears + '\'' +
+			", email='" + email + '\'' +
 			'}';
 	}
 }

@@ -230,4 +230,21 @@ fabric.properties
 # https://plugins.jetbrains.com/plugin/8053-azure-toolkit-for-intellij
 .idea/**/azureSettings.xml
 
+../.DS_Store
+        ../.idea/
+        .DS_Store
+        ../../.DS_Store
+        ../../.idea/
+         ../.DS_Store
+         .DS_Store
+
+         .DS_Store
+                 .idea/
+                 CA1/.DS_Store
+                 CA1/basic/.DS_Store
+                 CA1/basic/images/.DS_Store
+
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij
+
+

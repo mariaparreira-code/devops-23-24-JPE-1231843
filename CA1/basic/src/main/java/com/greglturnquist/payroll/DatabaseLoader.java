@@ -40,9 +40,9 @@ public class DatabaseLoader implements CommandLineRunner { // <2>
 	//o cliente vai fazer uma requisição e buscar ao servidor a informação que esta na base de dados.
 	@Override
 	public void run(String... strings) throws Exception { // <4>
-		this.repository.save(new Employee("Frodo", "Baggins", "ring bearer",5));
-		this.repository.save(new Employee("Bilbo", "Baggins", "burglar",3));
-		this.repository.save(new Employee("Maria", "Parreira", "student",1));
+		this.repository.save(new Employee("Frodo", "Baggins", "ring bearer",5,"123@gmail.com"));
+		this.repository.save(new Employee("Bilbo", "Baggins", "burglar",3,"abc@gmail.com"));
+		this.repository.save(new Employee("Maria", "Parreira", "student",1,"maria@gmail.com"));
 	}
 }
 
