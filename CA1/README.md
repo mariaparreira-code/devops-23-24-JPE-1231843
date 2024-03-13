@@ -300,7 +300,7 @@ All the changes will be directly pushed and merged into this main repository. We
 The basic difference between the workflow of Git and SVN is summarised by the following illustration.
 
 
-![git vs svn.png](..%2F..%2F..%2FDownloads%2F1625287699-103268.png)
+![git vs svn.png](/Users/mariaparreira/devops/devops-23-24-JPE-1231843/CA1/basic/images/svn.png)
 from: https://www.studytonight.com/git-guide/git-vs-svn
 
 ### _Applying Mercurial to the Assignment Goals_
