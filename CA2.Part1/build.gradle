@@ -54,33 +54,36 @@ jar {
 task runClient(type:JavaExec, dependsOn: classes){
     group = "DevOps"
     description = "Launches a chat client that connects to a server on localhost:59001 "
-  
     classpath = sourceSets.main.runtimeClasspath
-
     mainClass = 'basic_demo.ChatClientApp'
-
     args 'localhost', '59001'
 }
 
 task backup(type: Copy) {
+    group = "DevOps"
+    description = "Copy the contents of the src folder to a new backup folder."
     from 'src'
     into 'backup'
 }
 
 
 task archive(type: Zip) {
+    group = "DevOps"
+    description = "Copy the contents of the src folder to a new zip file."
     from 'src'
     archiveFileName = "app-source.zip"
     destinationDir = file('archives')
 }
 
+
 task runServer(type: JavaExec, dependsOn: classes) {
     group = "DevOps"
-    description = "A server on localhost:59001 waits for clients."
+    description = "A server on localhost 59001 waits for clients."
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'basic_demo.ChatServerApp'
     args '59001'
 }
+
 
 
 
