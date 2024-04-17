@@ -36,13 +36,15 @@ tasks.named('test') {
 }
 
 task copyJarToDist(type: Copy, dependsOn: build) {
+	group = 'com.example'
 	from 'build/libs/'
 	into 'dist'
 	include '*.jar'
 }
 
 task deleteFilesWebpack(type: Delete) {
+	group = 'com.example'
 	delete 'src/resources/main/static/built/*'
 }
 
-clean.dependsOn (deleteFilesWebpack)
+clean.dependsOn(deleteFilesWebpack)
