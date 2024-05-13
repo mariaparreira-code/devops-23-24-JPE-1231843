@@ -1,21 +1,6 @@
 'use strict';
 
-/*
-app.js is the proverbial public static void main() of our
-JavaScript application.
-webpack must know this in order to know what to launch when
-the final bundle is loaded by the browser.
- */
 
-/*
-Creates sourcemaps so that, when you are debugging
-JS code in the browser, you can link back to original source code.
- */
-
-/*
-React is one of the main libraries from Facebook used to build this app.
-
- */
 const React = require('react'); // <1>
 const ReactDOM = require('react-dom'); // <2>
 const client = require('./client'); // <3>
@@ -30,7 +15,7 @@ class App extends React.Component { // <1>
 	}
 
 	componentDidMount() { // <2>
-		client({method: 'GET', path: '/api/employees'}).done(response => {
+		client({method: 'GET', path: '/basic-0.0.1-SNAPSHOT'}).done(response => {
 			this.setState({employees: response.entity._embedded.employees});
 		});
 	}
