@@ -5,9 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.greglturnquist</groupId>
-		<artifactId>react-and-spring-data-rest</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.4.RELEASE</version>
+		<relativePath/>
 	</parent>
 
 	<artifactId>react-and-spring-data-rest-basic</artifactId>
