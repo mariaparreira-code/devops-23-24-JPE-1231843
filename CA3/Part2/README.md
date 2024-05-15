@@ -4,20 +4,19 @@
 
 This technical report documents Class Assignment 3 part 2 about **Virtualization with Vagrant**, completed by Maria Parreira (Student ID: 1231843), a student at ISEP and Switch.
 
-In this assignment, we will use Vagrant to set up a virtual environment to execute the tutorial spring boot application (gradle "basic" version) developed in CA2, Part 2.
+This assignment, will use Vagrant to set up a virtual environment to execute the **tutorial spring boot application (gradle "basic" version)** developed in CA2, Part 2.
 
 ### **Vagrant**
 
-Virtualization provides some important advantages such as isolation, sharable and reproducible environment, support different hardware and operating systems,...
+Virtualization provides some important advantages such as isolation, sharable and reproducible environment, support different hardware and operating systems.
 However, dealing with multiple VMs is hard... Configuring and sharing one VM is manageable, but, when we have to deal with multiple VMs, it is hard to do everything manually.
 
-In this Class Assignment, will be used **Vagrant** in order to configure virtualized development environments efficiently and repeatably.
+In this Class Assignment, **Vagrant** will be used in order to configure virtualized development environments efficiently and repeatably.
 It simplifies the process of creating and managing development environments, providing standardization, reproducibility, and isolation. 
-With Vagrant, we can easily share development environments among team members, automate software provisioning, and ensure that everyone works in identical environments, regardless of their operating systems or local configurations. 
-In summary, using Vagrant in this Class Assignment allows to create consistent, reproducible, and isolated development environments, improving efficiency and collaboration in the software development process.
+With Vagrant, we can easily share development environments among team members, automate software provisioning, and ensure that everyone works in identical environments, regardless of their operating systems or local configurations.
 
 ![vagrant.png](images/vagrant.png)
-[image from here](https://medium.com/@kamilmasyhur/vagrant-what-is-that-5ba440427098)
+[you can find image here](https://medium.com/@kamilmasyhur/vagrant-what-is-that-5ba440427098)
 
 
 ## This Class Assignment is divided into three parts:
@@ -29,24 +28,27 @@ In summary, using Vagrant in this Class Assignment allows to create consistent, 
 
 ## 1. _Install Vagrant in macOS with M1 CPU_
 
-- Install Xcode command line tools, witch is an Apple's integrated development environment widely used for macOS app development:
+**To successfully install Vagrant on macOS, the following steps should be followed:**
+
+- Install Xcode command line tools, witch is an Apple's integrated development environment for macOS app development:
 
 ```bash
 sudo xcode-select --install
 ```
-- Run a Homebrew installation script fetched from GitHub, making Homebrew installation easier (Homebrew being a package manager):
 
+- Run a Homebrew installation script fetched from GitHub (Homebrew being a package manager):
+  Once installed, you can use the brew command to install Vagrant
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-- Install QEMU and all its necessary dependencies to utilize QEMU for emulating operating systems and running software on a variety of architectures:
+- Install QEMU and all its necessary dependencies for emulating operating systems and running software:
 
 ```bash
 brew install qemu
 ```
 
-- Install Libvirt and all its necessary dependencies, so you can manage and interact with your virtual machines and containers programmatically or through command-line tools, providing greater flexibility and control over your virtualized environments:
+- Install Libvirt and all its necessary dependencies, to manage and interact with VM's and containers programmatically or through command-line tools, providing greater flexibility and control over virtualized environments:
 
 ```bash
 brew install libvirt
@@ -58,7 +60,7 @@ brew install libvirt
   brew install hashicorp/tap/hashicorp-vagrant
 ```
 
-- Install a plugin that allows Vagrant to work with QEMU:
+- Install plugin that allows Vagrant to work with QEMU:
 
 ```bash
   vagrant plugin install vagrant-qemu
@@ -72,7 +74,8 @@ vagrant -v
 
 ## 2. _Setup two VMs for running the Spring Basic Tutorial application_
 
-- This vagrant setup uses the spring application available [here](https://bitbucket.org/pssmatos/tut-basic-gradle) as an initial solution. However, it will be adapted for the **Class Assignment 2 Part 2: demoWithGradle** (a Spring Basic Tutorial application).
+- This vagrant setup uses the spring application available [here](https://bitbucket.org/pssmatos/tut-basic-gradle) as an initial solution. 
+- However, it will be adapted for the **Class Assignment 2 Part 2: demoWithGradle** (a Spring Basic Tutorial application).
 
 
 - **VMs to be configured:**
@@ -83,26 +86,36 @@ vagrant -v
       2. DATA BASE VM:
          - Executes the H2 database as a server process. The web application connects to this VM.
 
+
 ### 1. Copy the contents of the macOS folder from spring application to your repository (inside the folder CA3/Part2)
+
+Use the following command to copy the necessary files 
 ```bash
 cp -r /vagrant-multi-spring-tut-demo/macOS CA3/Part2
 ```
-### 2. Update the Vagrantfile configuration so that it uses gradle version of the spring application (inside the folder CA2.Part2/demoWithGradle)
 
-- change java version:
+### 2. Update the Vagrantfile 
+
+**Do the following steps to configure Vagrantfile so that it uses gradle version of the spring application (inside the folder CA2.Part2/demoWithGradle):**
+
+
+- Change java version:
 
 ```bash
 sudo apt-get install -y iputils-ping avahi-daemon libnss-mdns unzip \ openjdk-17-jdk-headless
 ```
 
-- change this command to clone correct repository:
-
+- Change the repository used doing:
+  (repository must be public)
 ```bash
 git clone https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git
 cd devops-23-24-JPE-1231843/CA2.Part2/demoWithGradle
 ```
 
-## 3. Open application.properties at demoWithGradle
+### 3. Go to demoWithGradle folder and open application.properties file
+
+This step is crucial for configuring the Spring Boot application to correctly connect to the H2 database server that will be running on a separate VM.
+
 
 ```
 server.servlet.context-path=/basic-0.0.1-SNAPSHOT
@@ -117,57 +130,82 @@ spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 spring.h2.console.settings.web-allow-others=true
 ```
+_server.servlet.context-path_: Defines the context path for the web application.
 
-### 4. Open app.js at demoWithGradle 
+_spring.data.rest.base-path_: Sets the base path for the REST API. All requests to the REST endpoints should start with /api.
 
+_spring.datasource.username_ and _spring.datasource.password_: Specify the credentials for connecting to the database.
+
+
+### 4. At demoWithGradle folder Open app.js 
+
+- Update the path of the following method, so it makes a GET request to the specified endpoint /basic-0.0.1-SNAPSHOT/api/employees to fetch employee data. 
+- Once the request is successful, it updates the component's state with the retrieved employee data.
 ```
-componentDidMount() { // <2>
+componentDidMount() { 
 		client({method: 'GET', path: '/basic-0.0.1-SNAPSHOT/api/employees'}).done(response => {
-			this.setState({employees: response.entity._embedded.employees});
-		});
+			this.setState({employees: response.entity._embedded.employees});});
 	}
 ```
-### 3. Execute vagrant :
 
-- You need sudo for the network to be configured correctly.
-- Downloads the base Vagrant box . Calls the hypervisor (UTM) to create a VM. Installs hypervisor tools as needed and setups the network and shared folders . Runs provision scripts to prepare the VM.
+### 5. Execute vagrant
+
+- Execute the following command to download the base Vagrant box, call the hypervisor (QEMU), 
+- install hypervisor tools as needed, setup the network and shared folders, run provision scripts to prepare the web and database VM's:
 
 ```bash
 sudo vagrant up
 ```
 
-### 4. Open web VM:
+### 6. Open VM's
+
+- After that it is possible open and execute VM's with following commands:
+
 ```bash
 sudo vagrant ssh web
 ```
+
 ![vagrantWeb.png](images/vagrantWeb.png)
 
-go to the CA2.Part2/demoWithGradle folder and run de application with command : 
-./gradlew bootRun 
-
-### 5. Open web DB:
 ```bash
 sudo vagrant ssh db
 ```
 
 ![vagrantDB.png](images/vagrantDB.png)
 
-### 4. In the host open the spring web application using the following url on browser:
+
+### 7. Run Spring Boot Application on Web VM
+
+-Go to the CA2.Part2/demoWithGradle folder and use the following command :
+
+```gradle
+./gradlew bootRun
+```
+
+### 8. In the host machine open the application in browser using the following url
 
 ```
 http://localhost:8080/basic-0.0.1-SNAPSHOT/
 ```
+![web.png](images/web.png)
 
-### 5. Open the H2 console using the following url on browser:
+
+### 9. Open the H2 console using the following url on browser
 
 ```
-http://localhost:8082/basic-0.0.1-SNAPSHOT/h2-console
+http://localhost:8082/
 ```
-after that, for the connection use: jdbc:h2:tcp://192.168.56.11:9092/./jpadb
+- After that, for the connection use: jdbc:h2:tcp://192.168.56.11:9092/./jpadb
 
-### 6. At the end of the part 2 of this assignment mark your repository with the tag ca3-part2.
+![db.png](images/db.png)
+
+### 10. At the end of the part 2 of this assignment mark your repository with the tag ca3-part2.
 
 ```bash
 git tag ca3-part2
 ```
 
+## Conclusion
+
+Through the outlined setup process, a seamless and reproducible development environment was established using Vagrant.
+This enabled efficient management of multiple VMs and ensured consistent deployment across diverse operating systems. 
