@@ -6,7 +6,7 @@ const ReactDOM = require('react-dom'); // <2>
 const client = require('./client'); // <3>
 
 
-// tag::app[]
+
 class App extends React.Component { // <1>
 
 	constructor(props) {
@@ -26,9 +26,7 @@ class App extends React.Component { // <1>
 		)
 	}
 }
-// end::app[]
 
-// tag::employee-list[]
 class EmployeeList extends React.Component{
 	render() {
 		const employees = this.props.employees.map(employee =>
@@ -50,9 +48,8 @@ class EmployeeList extends React.Component{
 		)
 	}
 }
-// end::employee-list[]
 
-// tag::employee[]
+
 class Employee extends React.Component{
 	render() {
 		return (

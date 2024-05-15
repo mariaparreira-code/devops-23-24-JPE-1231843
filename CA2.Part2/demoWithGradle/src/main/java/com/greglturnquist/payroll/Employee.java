@@ -7,12 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
-/**
- * @author Greg Turnquist
- */
 
-@Entity // <1>
-
+@Entity
 public class Employee {
 
 	private @Id @GeneratedValue Long id; // <2>
@@ -60,8 +56,7 @@ public class Employee {
 		  return email != null && email.contains("@");
 	  }
 
-	//Esta função em Java é a implementação do método equals da classe Object.
-	//O método equals é usado para comparar dois objetos.
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -131,7 +126,6 @@ public class Employee {
 	}
 
 
-	//descrição do objeto numa string
 	@Override
 	public String toString() {
 		return "Employee{" +
@@ -144,4 +138,4 @@ public class Employee {
 			'}';
 	}
 }
-// end::code[]
+
