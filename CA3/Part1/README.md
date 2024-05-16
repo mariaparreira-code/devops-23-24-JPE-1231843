@@ -2,28 +2,28 @@
 
 ## Introduction
 
-This technical report documents Class Assignment 3 part 1 about **Virtualization**, completed by Maria Parreira (Student ID: 1231843), a student at ISEP and Switch.
+- This technical report documents Class Assignment 3 part 1 about **Virtualization**, completed by Maria Parreira (Student ID: 1231843), a student at ISEP and Switch.
 
-The aim of this assignment is to utilize virtualization techniques to migrate and operate previous projects within a virtualized Ubuntu environment, ensuring consistency and isolation from host systems. 
-This report documents the setup of the virtual machine (VM), configuration of development tools, and execution of specific projects-**Spring Boot tutorial and a Gradle demonstration**—providing detailed steps for others to replicate and understand the practical implications of virtualization in software development workflows.
+- The aim of this assignment is to utilize virtualization techniques to migrate and operate previous projects within a virtualized Ubuntu environment, ensuring consistency and isolation from host systems. 
+- This report documents the setup of the virtual machine (VM), configuration of development tools, and execution of specific projects-**Spring Boot tutorial and a Gradle demonstration**—providing detailed steps for others to replicate and understand the practical implications of virtualization in software development workflows.
 
 ### **Virtualization**
 
-In simple terms, **virtualization** is a technology used to create virtual representations of servers, storage, networks, and other physical machines. 
-Virtualization software replicates the functionalities of physical hardware, allowing multiple virtual machines to operate concurrently on a single physical machine.
-It is facilitated by a **hypervisor**, which serves as software enabling the operation of multiple virtual machines on a single physical machine. 
-Each virtual machine possesses its own operating system and applications, with the hypervisor managing the allocation of underlying physical computing resources such as CPU and memory to individual virtual machines as needed.
+- In simple terms, **virtualization** is a technology used to create virtual representations of servers, storage, networks, and other physical machines. 
+- Virtualization software replicates the functionalities of physical hardware, allowing multiple virtual machines to operate concurrently on a single physical machine.
+- It is facilitated by a **hypervisor**, which serves as software enabling the operation of multiple virtual machines on a single physical machine. 
+- Each virtual machine possesses its own operating system and applications, with the hypervisor managing the allocation of underlying physical computing resources such as CPU and memory to individual virtual machines as needed.
 
 Broadly, there are two forms of virtualization:
 
 1. **Hardware-level virtualization**: The hypervisor operates directly on the host hardware.
 2. **Hosted virtualization**: The hypervisor runs atop the host OS.
 
-This Class Assignment focuses on **Hosted virtualization** (as shown in the figure below):
+This Class Assignment focuses on **Hardware-level virtualization** (as shown in the figure below):
 
-![VirtualMachine.png](images/VirtualMachine.png)
+![UTM.png](images/UTM.png)
 
-While numerous hypervisors exist, this assignment utilized **UTM**. UTM leverages Apple's Hypervisor virtualization framework to execute ARM64 operating systems on Apple Silicon.
+- While numerous hypervisors exist, this assignment utilized **UTM**. UTM leverages Apple's Hypervisor virtualization framework to execute ARM64 operating systems on Apple Silicon.
 
 
 ## This Class Assignment is divided into three parts:
@@ -48,6 +48,9 @@ While numerous hypervisors exist, this assignment utilized **UTM**. UTM leverage
 
 - Install UTM from [mac.getutm.app](https://mac.getutm.app) (complete the setup process according to provided instructions).
 
+- In the first screen you will be given a choice of whether to use virtualization or emulation. Virtualization is always the best option, as the performance is vastly improved over emulation. 
+- It is only necessary to use emulation when the guest OS or guest OS programs that are trying to emulate are not compatible with computer’s architecture.
+- As Ubuntu is available for ARM architecture, it is possible to virtualize it on Apple Silicon.
 
 ### 3. Adding a New VM in UTM
 
@@ -177,8 +180,9 @@ git clone https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git
 
 ### 6. Configure maven wrapper and gradle wrapper
 
-Maven wrapper and Gradle wrapper must be given permission to execute.
-To accomplish that, go to the respective projects folders (CA1 and CA2.Part1) and execute the following command depending on the project build tool used :
+- Maven wrapper and Gradle wrapper must be given permission to execute.
+- To accomplish that, go to the respective projects folders (CA1 and CA2.Part1) and execute the following command depending on the project build tool used :
+
 ```bash
 chmod +x mvnw
 chmod +x gradlew
@@ -186,51 +190,57 @@ chmod +x gradlew
 
 ### 7. Run the project at CA1 folder with maven tool
 
-```bash
+```mvn
 ./mvnw spring-boot:run
 ```
-Get VM IP address with the command
+- Get VM IP address with the command:
 
 ```bash
 ip address
 ```
 
-While the project is running, you can open project on browser with url: http://(IP address):8080
+- While the project is running, you can open project on browser with url: http://(IP address):8080
 
-### 8. Run the project at CA2.Part1 folder with gradle build tool
+### 8. Build the project at CA2.Part1 folder with gradle build tool
 
 ```bash
 ./gradlew build
+```
+
+- To run the server write command:
+```gradle
 ./gradlew runServer
 ```
 
-To run the client open in host computer terminal at the same project folder, and do:
-```bash
+- To run the client open in host computer terminal at the same project folder, and do:
+```gradle
 ./gradlew runClient --args= "(VM IP address) 59001" 
 ```
 
 #### 9. Run the project at CA2 part 2 folder with gradle build tool
 
-```bash
+```gradle
 ./gradlew build
 ./gradlew bootRun
 ```
-Open project on browser with url: http://(VM IP address):8080
+- Open project on browser with url: http://(VM IP address):8080
 
 
 #### 10. Commit and push Changes to remote Repository
 
-Make frequent commits to repository with descriptive messages that clearly explain the changes or enhancements made.
-  ```
+- Make frequent commits to repository with descriptive messages that clearly explain the changes or enhancements made.
+  
+```bash
   git add .
   git commit -m "Describe changes here"
   git push
-  ```
+```
 
 #### 11. Tag for Release
 
-Once the assigment is complete tag repository to mark the version of the project
-  ```
+- Once the assigment is complete tag repository to mark the version of the project
+
+  ```bash
   git tag -a ca3-part1 -m "ca3-part1 release"
   git push origin --tags
   ```
@@ -238,9 +248,9 @@ Once the assigment is complete tag repository to mark the version of the project
 
 ## Conclusion
 
-This technical report demonstrates the setup and utilization of virtualization techniques to migrate and operate previous projects within a virtualized Ubuntu environment using UTM. 
-By following the outlined steps, a VM was created, networking for isolated development was configured, and essential development tools such as Git, Maven, Java, and Gradle were installed.
-Practical applications were illustrated by cloning, building, and executing projects from previous assignments, showcasing how virtualization can streamline software development workflows.
+- This technical report demonstrates the setup and utilization of virtualization techniques to migrate and operate previous projects within a virtualized Ubuntu environment using UTM. 
+- By following the outlined steps, a VM was created, networking for isolated development was configured, and essential development tools such as Git, Maven, Java, and Gradle were installed.
+- Practical applications were illustrated by cloning, building, and executing projects from previous assignments, showcasing how virtualization can streamline software development workflows.
 
 
 
