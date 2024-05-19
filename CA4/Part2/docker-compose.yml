@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: DockerfileWeb
+    ports:
+      - "8080:8080"
+
+  db:
+    build:
+      context: .
+      dockerfile: DockerfileDb
+    ports:
+      - "9092:9092"

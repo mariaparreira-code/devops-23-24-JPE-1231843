@@ -1,0 +1,11 @@
+# Use a imagem oficial do OpenJDK 17
+FROM openjdk:17-jdk-slim
+
+# Instalação do Wget para baixar o H2
+RUN apt-get update && apt-get install -y wget
+
+# Baixar o arquivo JAR do H2
+RUN wget https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar
+
+# Comando para iniciar o servidor H2
+CMD java -cp h2-1.4.200.jar org.h2.tools.Server -web -webAllowOthers -tcp -tcpAllowOthers -ifNotExists
