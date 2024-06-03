@@ -7,17 +7,30 @@
 
 - ### Requirements
 
-[Docker](https://www.docker.com) installed on your machine
-[Docker Hub](https://hub.docker.com) account (if you want to publish the images)
+1. [Docker](https://www.docker.com) installed on your machine
+2. [Docker Hub](https://hub.docker.com) account (if you want to publish the images)
+
+
+### The report is divided into sections:
+
+1. **Clone the Repository**
+2. **Dockerfile for Web Service**
+3. **Dockerfile for Database Service (H2)**
+4. **Docker Compose**
+5. **Build and Run the Containers**
+6. **Accessing the Application and Database**
+7. **Kubernetes**
 
 
 ## Step 1: Clone the Repository
-   Clone the repository with the Spring application:
+
+- Clone the repository with the Spring application:
 
 ```bash
 
 git clone https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git
 ```
+
 ## Step 2: Dockerfile for Web Service
 
 ```Dockerfile
@@ -123,7 +136,18 @@ docker-compose up --build
 
 ## Step 6: Accessing the Application and Database
 
-   Spring Application: Access http://localhost:8080/basic-0.0.1-SNAPSHOT
-   H2 Database Console: Access http://localhost:9092 and enter the credentials as configured in the Spring application
+   - Spring Application: Access http://localhost:8080/basic-0.0.1-SNAPSHOT
+   - H2 Database Console: Access http://localhost:9092 and enter the credentials as configured in the Spring application
 
-To publish your images to Docker Hub, follow the steps described in the official Docker documentation.
+- To publish your images to Docker Hub, follow the steps described in the official Docker documentation.
+
+## Kubernetes
+
+- Kubernetes is an open-source container orchestration system that automates the deployment, scaling, and management of containerized applications. 
+- It complements Docker by adding advanced orchestration capabilities, such as automatic scaling, load balancing, and fault recovery. 
+- Kubernetes leverages Docker's popularity and knowledge while providing centralized and efficient management of distributed containers across clusters. 
+- Its flexibility in supporting various containerization technologies makes it a valuable addition to Docker, enabling seamless management of containerized applications at scale.
+
+
+
+

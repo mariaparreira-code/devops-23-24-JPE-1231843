@@ -9,13 +9,31 @@
 
 - Docker simplifies the process of building, shipping, and running applications by providing a consistent environment across different systems, regardless of the underlying infrastructure. It achieves this through containerization, which encapsulates the application, its dependencies, and runtime environment into a single package. This package, known as a Docker image, can be easily shared and deployed across various environments, from development laptops to production servers.
 
-- **Advantages of Docker** : Portability, Isolation, Efficiency, Scalability, Consistency
+- **Advantages of Docker** : Portability, Isolation, Efficiency, Scalability, Consistency.
 
-- ### **Prerequisites**
+![Docker-Diagram.png](images/Docker-Diagram.png)
+[from here](https://kinsta.com/pt/base-de-conhecimento/que-e-docker/)
+
+
+### **Prerequisites**
 
 1. Before getting started, ensure you have [Docker](https://docs.docker.com/get-docker/) installed on your machine. 
-2. The goal is to create a Docker image to run a chat server using the provided application from CA2.
 
+
+### The report is divided into sections:
+
+1. **Copy the CA2.Part1 folder**
+2. **Write the Dockerfile**
+3. **Build the Docker Image**
+4. **Run the Container**
+5. **Test the Connection**
+6. **Build the chat server in your host computer and copy the jar file ”into” the Dockerfile**
+7. **Test the Connection**
+8. **Publish the Image to Docker Hub**
+9. **Conclusion**
+
+
+### The goal is to create a Docker image to run a chat server using the CA2 application from [here](https://github.com/mariaparreira-code/devops-23-24-JPE-1231843).
 
 ## Step 1: Copy the CA2.Part1 folder 
 
@@ -128,13 +146,8 @@ docker push your_username/chat-server:ca4-part1
 ## Conclusion
 
 - In this technical report, I have successfully demonstrated the process of containerizing a chat server application using Docker.
-
-- By following the steps outlined, I created a Docker image from a Gradle project, run the application in a Docker container, and ensured it was functional by testing the connection. 
-
+- By following the steps outlined, I created a Docker image from a Gradle project, run the application in a Docker container, and ensured it was functional by testing the connection.
 - Additionally, I covered how to publish the Docker image to Docker Hub for sharing and reuse.
-
-- Docker's containerization technology provides a reliable and efficient way to manage application deployment, ensuring consistency across different environments. 
-
+- Docker's containerization technology provides a reliable and efficient way to manage application deployment, ensuring consistency across different environments.
 - This hands-on experience with Docker not only illustrates its practical advantages but also enhances my understanding of software deployment practices.
-
 - By completing this assignment, I have gained valuable insights into Docker's capabilities and reaffirmed its role as a powerful tool in the DevOps toolkit.
