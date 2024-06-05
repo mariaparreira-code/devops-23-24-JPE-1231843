@@ -85,7 +85,17 @@ RUN ./gradlew build
 CMD ["./gradlew", "bootRun"]
 ```
 
-## Step 4: Docker Compose
+## Step 4: Build the Docker Image
+
+- Build the Docker image by running the following command in the terminal, while in the project root:
+
+```bash
+docker build -t web -f DockerfileWeb .
+
+docker build -t db -f DockerfileDb .
+```
+
+## Step 5: Docker Compose
 
 - Create a docker-compose.yml file with the following configuration:
 
@@ -125,7 +135,7 @@ volumes:
 ```
 
 
-## Step 5: Build and Run the Containers
+## Step 6: Build and Run the Containers
 
 - In the terminal, execute the following command in the root of your project:
 
@@ -134,7 +144,7 @@ docker-compose up --build
 ```
 - This will build and run the containers defined in the docker-compose.yml file.
 
-## Step 6: Accessing the Application and Database
+## Step 7: Accessing the Application and Database
 
    - Spring Application: Access http://localhost:8080/basic-0.0.1-SNAPSHOT
    - H2 Database Console: Access http://localhost:9092 and enter the credentials as configured in the Spring application
@@ -148,6 +158,107 @@ docker-compose up --build
 - Kubernetes leverages Docker's popularity and knowledge while providing centralized and efficient management of distributed containers across clusters. 
 - Its flexibility in supporting various containerization technologies makes it a valuable addition to Docker, enabling seamless management of containerized applications at scale.
 
+### Para implantar e conectar dois servidores(web e data base), no Kubernetes, você pode seguir os seguintes passos:
 
 
+## Step 1: Start Minikube
 
+- To start Minikube, run the following command in your terminal:
+
+```bash
+minikube start
+```
+- This will start a local Kubernetes cluster using Minikube.
+
+## Step 2: Apply YAML Files
+
+- With Minikube running, you can apply YAML files to define and deploy resources in the Kubernetes cluster. 
+
+- For example, consider the following YAML files for a web service and a database:
+
+**web-server.yaml:**
+
+- This YAML configuration file defines a Kubernetes Pod named web-server.
+
+```yaml
+apiVersion: v1 # Specifies the API version for Kubernetes resources
+kind: Pod # Defines the kind of resource, which is a Pod in this case
+metadata:
+  name: web-server # Metadata section includes the name of the Pod
+spec:
+  containers:
+    - name: web # Defines a container named 'web' within the Pod
+      image: web # Specifies the Docker image to use for this container
+      ports:
+        - containerPort: 8080 # Exposes port 8080 on the container
+      env:
+        - name: SPRING_DATASOURCE_URL # Sets an environment variable for the container
+          value: jdbc:h2:tcp://database-service:9092/./jpadb # JDBC URL for the H2 database service
+      imagePullPolicy: Never # Specifies that the image should not be pulled from a registry, assuming it is present locally
+
+
+```
+
+**database.yaml:**
+
+- This YAML configuration file defines a Kubernetes Pod named database-server.
+
+```yaml
+apiVersion: v1 # Specifies the API version for Kubernetes resources
+kind: Pod # Defines the kind of resource, which is a Pod in this case
+metadata:
+  name: database-server # Metadata section includes the name of the Pod
+spec:
+  containers:
+    - name: database # Defines a container named 'database' within the Pod
+      image: db # Specifies the Docker image to use for this container
+      ports:
+        - containerPort: 8082 # Exposes port 8082 on the container
+        - containerPort: 9092 # Exposes port 9092 on the container
+      env:
+        - name: H2_OPTIONS # Sets an environment variable for the container
+          value: "-tcp -tcpAllowOthers -ifNotExists" # Options for H2 database configuration
+      resources: # Resource requests and limits section
+        requests:
+          memory: "64Mi" # Requests 64 MiB of memory
+          cpu: "250m" # Requests 250 millicores of CPU
+        limits:
+          memory: "128Mi" # Limits the memory usage to 128 MiB
+          cpu: "500m" # Limits the CPU usage to 500 millicores
+      imagePullPolicy: Never # Specifies that the image should not be pulled from a registry, assuming it is present locally
+```
+
+- Apply these YAML files using the kubectl apply -f <yaml-file> command:
+
+```bash
+kubectl apply -f web-server.yaml
+kubectl apply -f database.yaml
+```
+
+- This will create and deploy the resources specified in the YAML files to the Kubernetes cluster.
+
+## Step 3: Check Status
+
+- After applying the YAML files, you can check the status of deployed resources using the kubectl get <resource> command:
+
+- This will display a list of pods and services running in the Kubernetes cluster.
+
+```bash
+kubectl get pods
+kubectl get services
+```
+
+## Step 4: Access Services
+
+With the resources deployed, you can access exposed services as needed. 
+For example, if your web service is mapped to port 8080, you can access it in your browser using http://localhost:8080.
+
+## Step 5: Stop Minikube
+
+When you're done using Minikube, you can stop it with the following command:
+
+```bash
+minikube stop
+```
+
+This will stop the local Kubernetes cluster and free up system resources.

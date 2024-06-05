@@ -83,7 +83,7 @@ ENTRYPOINT ["./gradlew", "runServer"]
 - Build the Docker image by running the following command in the terminal, while in the project root:
 
 ```bash
-docker build -t ca4part1v1 -f DockerfileVersion1 .
+
 ```
 
 ## Step 4: Run the Container
