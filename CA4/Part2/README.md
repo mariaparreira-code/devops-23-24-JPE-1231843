@@ -1,5 +1,8 @@
 # Technical Report for Class Assignment 4 Part 2
 
+- This technical report documents Class Assignment 4 part 1 about **Docker**, completed by Maria Parreira (Student ID: 1231843), a student at ISEP and Switch.
+
+
 ## Introduction
 
 - This tutorial aims to demonstrate how to set up a **Dockerized environment** to run the basic Spring application using Gradle, as requested in the assignment. 
@@ -15,7 +18,7 @@
 
 1. **Clone the Repository**
 2. **Dockerfile for Web Service**
-3. **Dockerfile for Database Service (H2)**
+3. **Dockerfile for Database Service**
 4. **Docker Compose**
 5. **Build and Run the Containers**
 6. **Accessing the Application and Database**
@@ -27,7 +30,6 @@
 - Clone the repository with the Spring application:
 
 ```bash
-
 git clone https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git
 ```
 
@@ -133,7 +135,8 @@ volumes:
   h2-data:  
     driver: local
 ```
-
+- Docker Compose simplifies the deployment of multi-container Docker applications by allowing users to define and manage all required services in a single file. 
+- It streamlines environment setup, enabling easy replication across different stages, while ensuring consistency and portability.
 
 ## Step 6: Build and Run the Containers
 
@@ -158,19 +161,21 @@ docker-compose up --build
 - Kubernetes leverages Docker's popularity and knowledge while providing centralized and efficient management of distributed containers across clusters. 
 - Its flexibility in supporting various containerization technologies makes it a valuable addition to Docker, enabling seamless management of containerized applications at scale.
 
-### Para implantar e conectar dois servidores(web e data base), no Kubernetes, você pode seguir os seguintes passos:
+## How to deploy and connect servers in Kubernetes using Minikube
 
 
-## Step 1: Start Minikube
+### Step 1: Minikube Installation
 
-- To start Minikube, run the following command in your terminal:
+- To install Minikube on your MacBook, you can use Homebrew. Run the following commands in the terminal:
 
 ```bash
+brew install minikube
 minikube start
 ```
-- This will start a local Kubernetes cluster using Minikube.
+- The first command will install Minikube, while the second will initialize a local Kubernetes cluster using Minikube.
 
-## Step 2: Apply YAML Files
+
+### Step 2: Apply YAML Files
 
 - With Minikube running, you can apply YAML files to define and deploy resources in the Kubernetes cluster. 
 
@@ -195,8 +200,6 @@ spec:
         - name: SPRING_DATASOURCE_URL # Sets an environment variable for the container
           value: jdbc:h2:tcp://database-service:9092/./jpadb # JDBC URL for the H2 database service
       imagePullPolicy: Never # Specifies that the image should not be pulled from a registry, assuming it is present locally
-
-
 ```
 
 **database.yaml:**
@@ -229,15 +232,27 @@ spec:
 ```
 
 - Apply these YAML files using the kubectl apply -f <yaml-file> command:
+- It creates new resources in the cluster, such as pods. 
+- A Pod is an abstraction that encapsulates one or more containers and provides a way to manage them as a single unit in Kubernetes.
 
 ```bash
 kubectl apply -f web-server.yaml
-kubectl apply -f database.yaml
+kubectl apply -f database-server.yaml
 ```
 
-- This will create and deploy the resources specified in the YAML files to the Kubernetes cluster.
+- These commands will display a list of pods and services running in the Kubernetes cluster.
 
-## Step 3: Check Status
+**Note: Deployment and Services**
+
+Deployment: The YAML files provided here define individual Pods.
+In a production environment, it's common to use Deployment resources instead, which manage Pod lifecycle, scaling, and updates. 
+You can create a Deployment using YAML files similar to the ones provided, but with the kind changed to Deployment.
+
+Services: While Pods are individual instances of an application, Services provide a way to access a set of Pods. 
+They can load balance traffic across multiple Pods and provide a stable endpoint for accessing your application. 
+You can create Services to expose your Pods using YAML files with kind: Service.
+
+### Step 3: Check Status
 
 - After applying the YAML files, you can check the status of deployed resources using the kubectl get <resource> command:
 
@@ -245,20 +260,22 @@ kubectl apply -f database.yaml
 
 ```bash
 kubectl get pods
-kubectl get services
 ```
 
-## Step 4: Access Services
+### Step 4: Access Pod Logs
 
-With the resources deployed, you can access exposed services as needed. 
-For example, if your web service is mapped to port 8080, you can access it in your browser using http://localhost:8080.
+- To view logs from a specific container within a pod, you can use the kubectl logs command. Here's how you can do it:
 
-## Step 5: Stop Minikube
+```bash
+kubectl logs <pod-name> 
+```
 
-When you're done using Minikube, you can stop it with the following command:
+### Step 5: Stop Minikube
+
+- When you're done using Minikube, you can stop it with the following command:
 
 ```bash
 minikube stop
 ```
 
-This will stop the local Kubernetes cluster and free up system resources.
+- This will stop the local Kubernetes cluster and free up system resources.

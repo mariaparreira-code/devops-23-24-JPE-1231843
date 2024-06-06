@@ -1,8 +1,9 @@
 # Technical Report for Class Assignment 4 Part 1
 
-## Introduction
-
 - This technical report documents Class Assignment 4 part 1 about **Docker**, completed by Maria Parreira (Student ID: 1231843), a student at ISEP and Switch.
+
+
+## Introduction
 
 - Docker is a containerization platform that allows to package an application and its dependencies into a standardized unit called a container. 
 - Containers are lightweight, portable, and isolated environments that ensure consistency in development, testing, and deployment processes.
@@ -83,7 +84,7 @@ ENTRYPOINT ["./gradlew", "runServer"]
 - Build the Docker image by running the following command in the terminal, while in the project root:
 
 ```bash
-
+docker build -t ca4part1v1 -f DockerfileVersion1 .
 ```
 
 ## Step 4: Run the Container
@@ -138,8 +139,8 @@ To publish the image to Docker Hub, you need to log in to Docker Hub and then pu
 
 ```bash
 docker login
-docker tag chat-server your_username/chat-server:ca4-part1
-docker push your_username/chat-server:ca4-part1
+docker tag chat-server username/chat-server:ca4part1
+docker push username/chat-server:ca4part1
 ```
 
 

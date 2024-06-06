@@ -5,9 +5,9 @@ metadata:
 spec:
     containers:
       - name: web
-        image: web # Imagem da aplicação web
+        image: web
         ports:
-          - containerPort: 8080  # Porta para a aplicação Spring Boot
+          - containerPort: 8080
         env:
           - name: SPRING_DATASOURCE_URL
             value: jdbc:h2:tcp://database-service:9092/./jpadb  # URL do banco de dados H2 no serviço de banco de dados
