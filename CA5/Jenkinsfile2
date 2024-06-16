@@ -37,6 +37,8 @@ pipeline {
             }
             post {
                 always {
+                echo 'Verifying Javadoc directory contents:'
+                sh 'ls -l CA2.Part2/demoWithGradle/build/docs/javadoc'
                     publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: false,
