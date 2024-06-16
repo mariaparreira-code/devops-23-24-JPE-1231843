@@ -4,13 +4,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                git clone 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
             }
         }
 
         stage('Assemble') {
             steps {
-                dir('CA5/CA2.Part1') {
+                dir('CA2.Part1') {
                     sh './gradlew assemble'
                 }
             }
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                dir('CA5/CA2.Part1') {
+                dir('CA2.Part1') {
                     sh './gradlew test'
                 }
             }
