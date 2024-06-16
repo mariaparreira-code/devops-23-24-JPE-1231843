@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url:'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
             }
         }
 
@@ -38,12 +38,12 @@ pipeline {
             post {
                 always {
                     publishHTML(target: [
-                            allowMissing         : false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                            reportFiles          : 'index.html',
-                            reportName           : 'Javadoc'
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                        reportFiles: 'index.html',
+                        reportName: 'Javadoc'
                     ])
                 }
             }
@@ -58,8 +58,8 @@ pipeline {
         stage('Publish Image') {
             steps {
                 script {
-                    dir('CA5/Part2') {
-                        sh 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.war .'
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh 'cp build/libs/*.war .'
                         def app = docker.build("mariaparreira-code/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
