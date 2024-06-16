@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                branch: 'main', url:'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                git branch: 'main', url:'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
             }
         }
 
