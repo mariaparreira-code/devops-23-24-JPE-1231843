@@ -60,7 +60,7 @@ pipeline {
                 script {
                     dir('CA2.Part2/demoWithGradle') {
                         sh 'cp build/libs/*.war .'
-                        def app = docker.build("mariaparreira-code/devops_23_24:${env.BUILD_NUMBER}")
+                        def app = docker.build("maria/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
                         }
