@@ -29,22 +29,25 @@ pipeline {
             }
         }
 
-       stage('Javadoc') {
-                           steps {
-                               dir('CA2.Part2/demoWithGradle') {
-                                   echo 'Generating Javadoc...'
-                                   sh './gradlew javadoc'
-                                   publishHTML(target: [
-                                       allowMissing: false,
-                                       alwaysLinkToLastBuild: false,
-                                       keepAll: true,
-                                       reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                                       reportFiles: 'index.html',
-                                       reportName: 'Javadoc'
-                                   ])
-                               }
-                           }
-                       }
+        stage('Javadoc') {
+            steps {
+                dir('CA2.Part2/demoWithGradle') {
+                    sh './gradlew javadoc'
+                }
+            }
+            post {
+                always {
+                    publishHTML(target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                            reportFiles          : 'index.html',
+                            reportName           : 'Javadoc'
+                    ])
+                }
+            }
+        }
 
         stage('Archive') {
             steps {
@@ -53,17 +56,17 @@ pipeline {
         }
 
         stage('Publish Image') {
-                    steps {
-                        script {
-                            dir('CA5') {
-                                sh 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
-                                def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                                    app.push()
-                                }
-                            }
+            steps {
+                script {
+                    dir('CA5') {
+                        bat 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                            app.push()
                         }
                     }
                 }
             }
         }
+    }
+}
