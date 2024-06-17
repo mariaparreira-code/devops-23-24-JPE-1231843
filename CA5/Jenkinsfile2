@@ -2,36 +2,36 @@ pipeline {
 
     agent any
 
-    stages {
+        stages {
 
-        stage('Checkout') {
-                    steps {
-                        git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
-                    }
-                }
 
-        stage('Build') {
-            steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew clean build'
+            stage('Checkout') {
+                steps {
+                    git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
                 }
             }
-        }
 
-        stage('Test') {
-            steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew test'
+            stage('Assemble') {
+                steps {
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh './gradlew assemble'
+                    }
                 }
+            }
+
+            stage('Test') {
+                steps {
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh './gradlew test'
+                    }
             }
             post {
                 always {
                     junit '**/build/test-results/**/*.xml'
+                    }
                 }
             }
-        }
-
-       stage('Javadoc') {
+            stage('Javadoc') {
                            steps {
                                dir('CA2.Part2/demoWithGradle') {
                                    sh './gradlew javadoc'
@@ -45,27 +45,29 @@ pipeline {
                                    ])
                                }
                            }
-                       }
+             }
 
-        stage('Archive') {
+
+            stage('Archive') {
             steps {
                 archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+                }
             }
-        }
 
-        stage('Publish Image') {
-            steps {
-                script {
-                    dir('CA2.Part2/demoWithGradle') {
-                        sh 'cp build/libs/*.jar .'
-                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                            app.push()
+            stage('Publish Image') {
+                steps {
+                    script {
+                        dir('CA2.Part2/demoWithGradle') {
+                            sh 'chmod -R 755 build/libs'
+                            sh 'ls -l build/libs'
+                            sh 'cp build/libs/*.jar .'
+                            def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                                app.push()
+                            }
                         }
-
                     }
                 }
             }
         }
-    }
 }
