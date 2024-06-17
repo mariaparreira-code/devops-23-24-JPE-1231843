@@ -1,15 +1,23 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+
+                image "app:latest"
+                args "-u root"
+                alwaysPull false
+                reuseNode true
+              }
+        }
 
     stages {
 
+        stage('Checkout') {
+                    steps {
+                        git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                    }
+                }
 
-stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
-            }
-        }
         stage('Assemble') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
