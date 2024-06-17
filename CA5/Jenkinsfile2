@@ -4,16 +4,16 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+
+stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
             }
         }
-
         stage('Assemble') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew assemble'
+                    sh 'gradlew assemble'
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew test'
+                    sh 'gradlew test'
                 }
             }
             post {
@@ -35,7 +35,7 @@ pipeline {
                            steps {
                                dir('CA2.Part2/demoWithGradle') {
                                    echo 'Generating Javadoc...'
-                                   sh './gradlew javadoc'
+                                   sh 'gradlew javadoc'
                                    publishHTML(target: [
                                        allowMissing: false,
                                        alwaysLinkToLastBuild: false,
