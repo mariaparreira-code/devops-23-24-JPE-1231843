@@ -30,26 +30,21 @@ pipeline {
         }
 
         stage('Javadoc') {
-            steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew javadoc'
+                    steps {
+                        dir('CA2/part2/part2_gradle') {
+                            echo 'Generating Javadoc...'
+                            bat './gradlew.bat javadoc'
+                            publishHTML(target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll: true,
+                                reportDir: 'build/docs/javadoc',
+                                reportFiles: 'index.html',
+                                reportName: 'Javadoc'
+                            ])
+                        }
+                    }
                 }
-            }
-            post {
-                always {
-                echo 'Verifying Javadoc directory contents:'
-                sh 'ls -l CA2.Part2/demoWithGradle/build/docs/javadoc'
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                        reportFiles: 'index.html',
-                        reportName: 'Javadoc'
-                    ])
-                }
-            }
-        }
 
         stage('Archive') {
             steps {
@@ -62,7 +57,7 @@ pipeline {
                 script {
                     dir('CA2.Part2/demoWithGradle') {
                         sh 'cp build/libs/*.war .'
-                        def app = docker.build("maria/devops_23_24:${env.BUILD_NUMBER}")
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
                         }
