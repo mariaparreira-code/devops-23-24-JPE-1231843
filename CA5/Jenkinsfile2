@@ -1,7 +1,9 @@
 pipeline {
+
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
@@ -29,25 +31,22 @@ pipeline {
             }
         }
 
-        stage('Javadoc') {
-            steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew javadoc'
-                }
-            }
-            post {
-                always {
-                    publishHTML(target: [
-                            allowMissing         : false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                            reportFiles          : 'index.html',
-                            reportName           : 'Javadoc'
-                    ])
-                }
-            }
-        }
+       stage('Javadoc') {
+                           steps {
+                               dir('CA2.Part2/demoWithGradle') {
+                                   echo 'Generating Javadoc...'
+                                   sh './gradlew javadoc'
+                                   publishHTML(target: [
+                                       allowMissing: false,
+                                       alwaysLinkToLastBuild: false,
+                                       keepAll: true,
+                                       reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                                       reportFiles: 'index.html',
+                                       reportName: 'Javadoc'
+                                   ])
+                               }
+                           }
+                       }
 
         stage('Archive') {
             steps {
@@ -58,12 +57,13 @@ pipeline {
         stage('Publish Image') {
             steps {
                 script {
-                    dir('CA5') {
-                        bat 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
-                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh 'cp build/libs/*.jar .'
+                        def app = docker.build("maria/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
                         }
+
                     }
                 }
             }
