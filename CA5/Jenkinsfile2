@@ -10,10 +10,10 @@ pipeline {
                     }
                 }
 
-        stage('Assemble') {
+        stage('Build') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew assemble'
+                    sh './gradlew clean build'
                 }
             }
         }
@@ -34,7 +34,6 @@ pipeline {
        stage('Javadoc') {
                            steps {
                                dir('CA2.Part2/demoWithGradle') {
-                                   echo 'Generating Javadoc...'
                                    sh './gradlew javadoc'
                                    publishHTML(target: [
                                        allowMissing: false,
@@ -59,7 +58,7 @@ pipeline {
                 script {
                     dir('CA2.Part2/demoWithGradle') {
                         sh 'cp build/libs/*.jar .'
-                        def app = docker.build("maria/devops_23_24:${env.BUILD_NUMBER}")
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
                         }
