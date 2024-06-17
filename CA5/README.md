@@ -118,19 +118,21 @@ In your repository, create a file named Jenkinsfile inside the ca2/part2/spring-
 
 ```groovy
 pipeline {
+
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main', url:'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
             }
         }
 
         stage('Assemble') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    bat './gradlew assemble'
+                    sh './gradlew assemble'
                 }
             }
         }
@@ -138,7 +140,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    bat './gradlew test'
+                    sh './gradlew test'
                 }
             }
             post {
@@ -147,39 +149,37 @@ pipeline {
                 }
             }
         }
-
         stage('Javadoc') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    bat './gradlew javadoc'
-                }
-            }
-            post {
-                always {
+                    sh './gradlew javadoc'
                     publishHTML(target: [
-                            allowMissing         : false,
+                            allowMissing: false,
                             alwaysLinkToLastBuild: false,
-                            keepAll              : true,
-                            reportDir            : 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                            reportFiles          : 'index.html',
-                            reportName           : 'Javadoc'
+                            keepAll: true,
+                            reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                            reportFiles: 'index.html',
+                            reportName: 'Javadoc'
                     ])
                 }
             }
         }
 
+
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
+                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
             }
         }
 
         stage('Publish Image') {
             steps {
                 script {
-                    dir('CA5/Part2') {
-                        bat 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.war .'
-                        def app = docker.build("mariaparreira-code/devops_23_24:${env.BUILD_NUMBER}")
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh 'chmod -R 755 build/libs'
+                        sh 'ls -l build/libs'
+                        sh 'cp build/libs/*.jar .'
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
                         }
@@ -189,6 +189,7 @@ pipeline {
         }
     }
 }
+
 ```
 Step 3: Add Unit Tests
 Make sure you have unit tests in your project. If not, add some basic unit tests. Here is an example of a simple JUnit test:
