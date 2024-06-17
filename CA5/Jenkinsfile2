@@ -2,6 +2,12 @@ pipeline {
 
     agent any
 
+     environment {
+            DOCKER_CREDENTIALS_ID = 'dockerhub_credentials'
+            DOCKER_IMAGE = 'maria/springbootapp'
+            DOCKER_TAG = "${env.BUILD_ID}"
+        }
+
         stages {
 
             stage('Checkout') {
@@ -57,15 +63,17 @@ pipeline {
             stage('Publish Image') {
                         steps {
                             script {
-                                dir('CA5') {
-                                    sh 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
-                                    def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                                        app.push()
+                                echo 'Building and publishing Docker image...'
+                                docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                                    dir('CA2.Part2/demoWithGradle') {
+                                        def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                                        customImage.push()
+                                        customImage.push('latest')
                                     }
                                 }
                             }
                         }
+                    }
+                }
             }
-        }
-}
+
