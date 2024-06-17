@@ -1,14 +1,6 @@
 pipeline {
 
-    agent {
-        docker {
-
-                image "app:latest"
-                args "-u root"
-                alwaysPull false
-                reuseNode true
-              }
-        }
+    agent any
 
     stages {
 
@@ -21,7 +13,7 @@ pipeline {
         stage('Assemble') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    sh 'gradlew assemble'
+                    sh './gradlew assemble'
                 }
             }
         }
@@ -29,7 +21,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
-                    sh 'gradlew test'
+                    sh './gradlew test'
                 }
             }
             post {
@@ -43,7 +35,7 @@ pipeline {
                            steps {
                                dir('CA2.Part2/demoWithGradle') {
                                    echo 'Generating Javadoc...'
-                                   sh 'gradlew javadoc'
+                                   sh './gradlew javadoc'
                                    publishHTML(target: [
                                        allowMissing: false,
                                        alwaysLinkToLastBuild: false,
