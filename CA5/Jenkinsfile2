@@ -33,7 +33,7 @@ pipeline {
                     steps {
                         dir('CA2/part2/part2_gradle') {
                             echo 'Generating Javadoc...'
-                            bat './gradlew javadoc'
+                            sh './gradlew.sh javadoc'
                             publishHTML(target: [
                                 allowMissing: false,
                                 alwaysLinkToLastBuild: false,
