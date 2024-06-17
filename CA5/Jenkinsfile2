@@ -54,21 +54,16 @@ pipeline {
                 }
             }
 
-            stage('Image') {
-                steps {
-                    script {
-                        dir('CA2.Part2/demoWithGradle') {
-                            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials'){
-                                dir('CA2.part2/demoWithGradle') {
-                                    def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}") {
-                                        app.push()
-                                        customImage.push('latest')
-                                    }
+            stage('Publish Image') {
+                        steps {
+                            script {
+                                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                                    def customImage = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                                    customImage.push()
+                                    customImage.push('latest')
                                 }
                             }
                         }
-                    }
-                }
             }
         }
 }
