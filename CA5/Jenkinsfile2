@@ -45,6 +45,7 @@ pipeline {
                                }
                            }
                        }
+
         stage('Archive') {
             steps {
                 archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
@@ -55,7 +56,7 @@ pipeline {
             steps {
                 script {
                     dir('CA2.Part2/demoWithGradle') {
-                        sh 'cp build/libs/*.war .'
+                        sh 'cp build/libs/*.jar .'
                         def app = docker.build("maria/devops_23_24:${env.BUILD_NUMBER}")
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                             app.push()
