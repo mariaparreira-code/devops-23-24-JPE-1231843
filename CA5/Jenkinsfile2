@@ -44,7 +44,7 @@ pipeline {
                                    ])
                                }
                            }
-       }
+                       }
 
         stage('Archive') {
             steps {
@@ -53,20 +53,19 @@ pipeline {
         }
 
         stage('Publish Image') {
-                    steps {
-                        script {
-                            dir('CA2.Part2/demoWithGradle') {
-                                sh 'chmod -R 755 build/libs'
-                                sh 'ls -l build/libs'
-                                sh 'cp build/libs/*.jar .'
-                                def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                                    app.push()
-                                }
-                            }
+            steps {
+                script {
+                    dir('CA2.Part2/demoWithGradle') {
+                        sh 'chmod -R 755 build/libs'
+                        sh 'ls -l build/libs'
+                        sh 'cp build/libs/*.jar .'
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                        app.push()
                         }
                     }
+                }
+            }
         }
-
-
+    }
 }
