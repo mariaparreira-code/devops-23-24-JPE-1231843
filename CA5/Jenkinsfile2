@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-            PATH = "/usr/local/bin:${env.PATH}"
-        }
-
     stages {
         stage('Checkout') {
             steps {
@@ -52,24 +48,22 @@ pipeline {
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
+                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
             }
         }
 
         stage('Publish Image') {
-            steps {
-                script {
-                    dir('CA2.Part2/demoWithGradle') {
-                        sh 'chmod -R 755 build/libs'
-                        sh 'ls -l build/libs'
-                        sh 'cp build/libs/*.jar .'
-                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                        app.push()
+                    steps {
+                        script {
+                            dir('CA5') {
+                                sh 'copy ..\\..\\CA2.Part2\\build\\libs\\*.jar .'
+                                def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                                    app.push()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-    }
-}
