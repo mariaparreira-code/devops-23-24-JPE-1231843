@@ -64,7 +64,6 @@ pipeline {
                         steps {
                             script {
                                 dir('CA5') {
-                                    sh 'cp ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
                                     def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
                                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                                         app.push()
