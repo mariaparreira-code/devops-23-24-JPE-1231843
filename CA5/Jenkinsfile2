@@ -63,17 +63,16 @@ pipeline {
             stage('Publish Image') {
                         steps {
                             script {
-                                echo 'Building and publishing Docker image...'
-
-                                    dir('CA2.Part2/demoWithGradle') {
-                                        def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                                        customImage.push()
-                                        customImage.push('latest')
+                                dir('CA5') {
+                                    sh 'copy ..\\..\\CA2.Part2\\demoWithGradle\\build\\libs\\*.jar .'
+                                    def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                                        app.push()
                                     }
-
+                                }
                             }
                         }
-                    }
-                }
             }
+        }
+}
 
