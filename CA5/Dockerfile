@@ -1,5 +1,5 @@
 # Use a imagem base oficial do OpenJDK para Java 11
-FROM openjdk:17-jre-slim
+FROM openjdk:21-jdk-slim as builder
 
 # Cria um diretório para a aplicação
 WORKDIR /CA5
