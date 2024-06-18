@@ -1,79 +1,85 @@
 pipeline {
-
     agent any
 
-     environment {
-            DOCKER_CREDENTIALS_ID = 'dockerhub_credentials'
-            DOCKER_IMAGE = 'maria/springbootapp'
-            DOCKER_TAG = "${env.BUILD_ID}"
+    environment {
+        DOCKER_CREDENTIALS_ID = 'dockerhub_credentials'
+        DOCKER_IMAGE = 'maria/springbootapp'
+        DOCKER_TAG = "${env.BUILD_ID}"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+            }
         }
 
-        stages {
-
-            stage('Checkout') {
-                steps {
-                    git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+        stage('Assemble') {
+            steps {
+                dir('CA2.Part2/demoWithGradle') {
+                    sh './gradlew assemble'
                 }
             }
+        }
 
-            stage('Assemble') {
-                steps {
-                    dir('CA2.Part2/demoWithGradle') {
-                        sh './gradlew assemble'
-                    }
+        stage('Test') {
+            steps {
+                dir('CA2.Part2/demoWithGradle') {
+                    sh './gradlew test'
                 }
-            }
-
-            stage('Test') {
-                steps {
-                    dir('CA2.Part2/demoWithGradle') {
-                        sh './gradlew test'
-                    }
             }
             post {
                 always {
                     junit '**/build/test-results/**/*.xml'
-                    }
                 }
             }
+        }
 
-            stage('Javadoc') {
-                           steps {
-                               dir('CA2.Part2/demoWithGradle') {
-                                   sh './gradlew javadoc'
-                                   publishHTML(target: [
-                                       allowMissing: false,
-                                       alwaysLinkToLastBuild: false,
-                                       keepAll: true,
-                                       reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
-                                       reportFiles: 'index.html',
-                                       reportName: 'Javadoc'
-                                   ])
-                               }
-                           }
-             }
+        stage('Javadoc') {
+            steps {
+                dir('CA2.Part2/demoWithGradle') {
+                    sh './gradlew javadoc'
+                    publishHTML(target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                        reportFiles: 'index.html',
+                        reportName: 'Javadoc'
+                    ])
+                }
+            }
+        }
 
-
-            stage('Archive') {
+        stage('Archive') {
             steps {
                 archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
-                }
             }
+        }
 
-
-            stage('Publish Image') {
-                        steps {
-                            script {
-                                dir('CA5') {
-                                    def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                                        app.push()
-                                    }
-                                }
-                            }
-                        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dir('CA5') {
+                        sh 'ls -la'
+                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
                     }
                 }
             }
+        }
+
+        stage('Publish Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS_ID) {
+                        docker.image("mariaparreira/devops_23_24:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
