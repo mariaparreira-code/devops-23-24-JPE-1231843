@@ -73,20 +73,21 @@ pipeline {
                             }
                         }
 
-       stage('Publish Image') {
+       stage('Archive') {
+                   steps {
+                       archiveArtifacts 'build/libs/*.jar'
+                   }
+               }
+
+               stage('Publish Image') {
                    steps {
                        script {
-                           dir('CA2.Part2/demoWithGradle') {
-                               def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                               docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                                   app.push()
-                               }
+                           def dockerImage = docker.build("mariaparreira/imagename:${env.BUILD_NUMBER}")
+                           docker.withRegistry('https://registry.hub.docker.com', 'dockerHubCredentials') {
+                               dockerImage.push()
                            }
                        }
                    }
                }
            }
        }
-
-
-
