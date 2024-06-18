@@ -5,10 +5,7 @@ FROM openjdk:21-jdk-slim as builder
 WORKDIR /CA5
 
 # Copia o arquivo JAR gerado pelo Gradle para o diretório de trabalho no contêiner
-COPY CA2.Part2/demoWithGradle/build/libs/*.jar /CA5
-
-# Expõe a porta que o Spring Boot usa
-EXPOSE 8080
+COPY CA2.Part2/demoWithGradle/build/libs/*.jar app.jar
 
 # Define o comando padrão para executar o aplicativo
 ENTRYPOINT ["java", "-jar", "app.jar"]

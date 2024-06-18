@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub_credentials'
-        DOCKER_IMAGE = 'maria/springbootapp'
-        DOCKER_TAG = "${env.BUILD_ID}"
     }
 
     stages {
@@ -58,28 +56,21 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    dir('CA5') {
-                        sh 'ls -la'
-                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                    }
-                }
-            }
-        }
-
-        stage('Publish Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS_ID) {
-                        docker.image("mariaparreira/devops_23_24:${env.BUILD_NUMBER}").push()
-                    }
-                }
-            }
-        }
-    }
-}
+       stage('Publish Image') {
+                   steps {
+                       script {
+                           dir('CA5') {
+                               sh 'cp CA2.Part2/demoWithGradle/build/libs/*.jar .'
+                               def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
+                               docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                                   app.push()
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+       }
 
 
 
