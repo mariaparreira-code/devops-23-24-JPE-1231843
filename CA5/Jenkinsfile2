@@ -72,7 +72,7 @@ pipeline {
 
         stage('Create Dockerfile') {
             steps {
-                dir('CA5') {
+                dir('Ca2.Part2/demoWithGradle') {
                     script {
                         def dockerfileContent = """
                         FROM gradle:jdk21
@@ -101,7 +101,7 @@ pipeline {
                     steps {
                         script {
                             docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_CREDENTIALS_ID}") {
-                                dir('CA5') {
+                                dir('Ca2.Part2/demoWithGradle') {
                                     def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                                     customImage.push()
                                     customImage.push('latest')
