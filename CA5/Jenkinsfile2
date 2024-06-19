@@ -1,19 +1,36 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_IMAGE = '1231843/ca2-part2-jenkins'
+        DOCKER_TAG = "${env.BUILD_ID}"
+    }
 
     stages {
-
         stage('Checkout') {
+             steps {
+                 echo 'Checking out code from the repository'
+                 git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+               }
+        }
+
+        stage('Set Permissions') {
             steps {
-                git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Setting executable permissions on gradlew...'
+                    sh 'chmod +x gradlew'
+                }
             }
         }
 
         stage('Assemble') {
             steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew assemble'
+                retry(3) {
+                    dir('CA2.Part2/demoWithGradle') {
+                        echo 'Assembling the application...'
+                        sh './gradlew assemble'
+                    }
                 }
             }
         }
@@ -21,25 +38,22 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
+                    echo 'Running unit tests...'
                     sh './gradlew test'
-                }
-            }
-            post {
-                always {
-                    junit '**/build/test-results/**/*.xml'
                 }
             }
         }
 
         stage('Javadoc') {
             steps {
-                dir('CA2.Part2/demoWithGradle') {
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Generating Javadoc...'
                     sh './gradlew javadoc'
                     publishHTML(target: [
                         allowMissing: false,
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
-                        reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                        reportDir: 'build/docs/javadoc',
                         reportFiles: 'index.html',
                         reportName: 'Javadoc'
                     ])
@@ -48,46 +62,53 @@ pipeline {
         }
 
         stage('Archive') {
-                    steps {
-                        dir('CA2.Part2/demoWithGradle') {
-                            echo 'Archiving artifacts...'
-                            archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+            steps {
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Archiving artifacts...'
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        stage('Create Dockerfile') {
+            steps {
+                dir('Ca2.Part2/demoWithGradle') {
+                    script {
+                        def dockerfileContent = """
+                        FROM gradle:jdk21
+                        WORKDIR /app
+                        COPY build/libs/*.jar app.jar
+                        EXPOSE 8080
+                        ENTRYPOINT ["java", "-jar", "app.jar"]
+                        """
+                        writeFile file: 'Dockerfile', text: dockerfileContent
+                    }
+                }
+            }
+        }
+
+        stage('Publish Image') {
+            steps {
+                script {
+                    echo 'Building and publishing Docker image...'
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        dir('Ca2.Part2/demoWithGradle') {
+                            def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            customImage.push()
+                            customImage.push('latest')
                         }
                     }
                 }
+            }
+        }
 
-                 stage('Create Dockerfile') {
-                            steps {
-                                dir('CA2.Part2/demoWithGradle') {
-                                    script {
-                                        def dockerfileContent = """
-                                        FROM openjdk:21-jdk-slim as builder
-                                        WORKDIR /app
-                                        COPY build/libs/*.jar app.jar
-                                        EXPOSE 8080
-                                        ENTRYPOINT ["java", "-jar", "app.jar"]
-                                        """
-                                        writeFile file: 'Dockerfile', text: dockerfileContent
-                                    }
-                                }
-                            }
-                        }
-
-       stage('Archive') {
-                   steps {
-                       archiveArtifacts 'build/libs/*.jar'
-                   }
-               }
-
-               stage('Publish Image') {
-                   steps {
-                       script {
-                           def dockerImage = docker.build("mariaparreira/imagename:${env.BUILD_NUMBER}")
-                           docker.withRegistry('https://registry.hub.docker.com', 'dockerHubCredentials') {
-                               dockerImage.push()
-                           }
-                       }
-                   }
-               }
-           }
-       }
+        stage('Run Container') {
+            steps {
+                script {
+                    echo 'Running Docker container...'
+                    sh "docker run -d -p 8080:8080 ${DOCKER_IMAGE}:latest"
+                }
+            }
+        }
+    }
+}
