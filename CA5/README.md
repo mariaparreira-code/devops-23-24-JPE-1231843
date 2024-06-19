@@ -1,21 +1,23 @@
 # Technical Report for Class Assignment 5
 
 
-## Part 1: Gradle Basic Demo Project
+## Set up Jenkins
 
-### Step 1: Set up Jenkins
-
-**Install Jenkins using Docker**
+- **Install Jenkins using .war file [See instructions HERE](https://www.jenkins.io/doc/book/installing/war-file/)**
 
 - Open your terminal/console and run the following command:
 
 ```bash
-docker run -d -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home --name=jenkins jenkins/jenkins:lts-jdk11
+java -jar jenkins.war
 ```
 
-- Wait for Jenkins to start. You can access it by navigating to http://localhost:8080 in your web browser.
+- Wait for Jenkins to start. You can access it by navigating to http://localhost:8080 in your web browser. 
+- Configure account and password.
+- Install the suggested plugins.
 
-### Step 2: Create a Pipeline for the Gradle Basic Demo Project
+## Part 1: Gradle Basic Demo Application
+
+### Step 1: Create a Pipeline for the Gradle Basic Demo CA2.PART1
 
 **Create a Jenkins Job**
 
@@ -25,11 +27,15 @@ docker run -d -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home --na
 
 **Configure the Pipeline**
 
+- Click on "New Item"
+- Enter the item name 
+- Select "Pipeline" and click "OK"
 - In the job configuration, go to the "Pipeline" section.
 - Set "Definition" to "Pipeline script from SCM".
-- Set "SCM" to "Git" and provide the repository URL.
-- In the "Script Path" field, enter the path to your Jenkinsfile, e.g., ca2/part1/gradle-basic-demo/Jenkinsfile.
-- 
+- Set "SCM" to "Git" and provide the repository URL (e.g. https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git)
+- In the "Script Path" field, enter the path to your Jenkinsfile, e.g., CA5/Jenkinsfile.
+
+
 **Create the Jenkinsfile**
 
 - In your repository, create a file named Jenkinsfile inside the CA5 directory with the following content:
@@ -75,64 +81,85 @@ pipeline {
 }
 ```
 
-### Step3: Verify the Pipeline Functionality in Jenkins
+### Step2: Verify the Pipeline Functionality in Jenkins
 
-**Ensure the Jenkinsfile is in the Correct Path:**
-- Make sure the Jenkinsfile is located in the correct path within the repository
-- Verify that the content of the Jenkinsfile is correct as per the provided example.
 
 **Run the Job in Jenkins:**
-- Save the Configuration and Start the Pipeline.
+
 - Save the configuration and click on "Build Now" to start the pipeline.
 - Monitor the pipeline execution in the Jenkins interface. You will see logs for each stage (Checkout, Assemble, Test, Archive).
 
 **Verify the Results:**
+
 - After the execution, check the unit test results in the "Test Result" tab.
 
 **Check Archived Artifacts:**
+
 - Verify that the artifacts have been archived correctly in the "Artifacts" tab.
 
 
 **My RESULTS**
 
 ![result1.png](images/result1.png)
+![result6.png](images/result6.png)
 
 
 ----------------------------------------------------------------------
 
-Part 2: Spring Boot Application
-Step 1: Create a Pipeline for the Spring Boot Application
-Create a Jenkins Job:
+## Part 2: Spring Boot Application
 
-Open Jenkins and log in.
-Click on "New Item" to create a new job.
-Select "Pipeline" and give it a name, e.g., "Spring Boot Application".
-Configure the Pipeline:
+### Step 1: Create a Pipeline for the Spring Boot Application
 
-In the job configuration, go to the "Pipeline" section.
-Set "Definition" to "Pipeline script from SCM".
-Set "SCM" to "Git" and provide the repository URL.
-In the "Script Path" field, enter the path to your Jenkinsfile, e.g., ca2/part2/spring-boot-app/Jenkinsfile.
-Step 2: Create the Jenkinsfile
-In your repository, create a file named Jenkinsfile inside the ca2/part2/spring-boot-app/ directory with the following content:
+- Create a new item in jenkins with the following steps:
+
+    - Click on "New Item"
+    - Enter the item name (SpringBootApplication-CA2.Part2 for the example)
+    - Select "Pipeline" and click "OK"
+    - In the "Pipeline" section, select "Pipeline script from SCM"
+    - Choose Git as the SCM
+    - In the "Repository URL" field, enter the URL of the repository
+    - In the "Script Path" field, enter the path to the Jenkinsfile2, specific to the repository
+    - Click "Save"
+
+
+## Step 2: Create the Jenkinsfile
+
+In your repository, create a file named Jenkinsfile2 inside the CA5 directory with the following content:
 
 ```groovy
 pipeline {
-
     agent any
 
-    stages {
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-credentials'
+        DOCKER_IMAGE = 'maria1231483/ca2-part2-jenkins'
+        DOCKER_TAG = "${env.BUILD_ID}"
+    }
 
+    stages {
         stage('Checkout') {
             steps {
+                echo 'Checking out code from the repository'
                 git branch: 'main', url: 'https://github.com/mariaparreira-code/devops-23-24-JPE-1231843.git'
+            }
+        }
+
+        stage('Set Permissions') {
+            steps {
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Setting executable permissions on gradlew...'
+                    sh 'chmod +x gradlew'
+                }
             }
         }
 
         stage('Assemble') {
             steps {
-                dir('CA2.Part2/demoWithGradle') {
-                    sh './gradlew assemble'
+                retry(3) {
+                    dir('CA2.Part2/demoWithGradle') {
+                        echo 'Assembling the application...'
+                        sh './gradlew assemble'
+                    }
                 }
             }
         }
@@ -140,24 +167,22 @@ pipeline {
         stage('Test') {
             steps {
                 dir('CA2.Part2/demoWithGradle') {
+                    echo 'Running unit tests...'
                     sh './gradlew test'
                 }
             }
-            post {
-                always {
-                    junit '**/build/test-results/**/*.xml'
-                }
-            }
         }
+
         stage('Javadoc') {
             steps {
-                dir('CA2.Part2/demoWithGradle') {
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Generating Javadoc...'
                     sh './gradlew javadoc'
                     publishHTML(target: [
                             allowMissing: false,
                             alwaysLinkToLastBuild: false,
                             keepAll: true,
-                            reportDir: 'CA2.Part2/demoWithGradle/build/docs/javadoc',
+                            reportDir: 'build/docs/javadoc',
                             reportFiles: 'index.html',
                             reportName: 'Javadoc'
                     ])
@@ -165,25 +190,61 @@ pipeline {
             }
         }
 
-
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+                dir('Ca2.Part2/demoWithGradle') {
+                    echo 'Archiving artifacts...'
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
+            }
+        }
+
+        stage('Create Dockerfile') {
+            steps {
+                dir('Ca2.Part2/demoWithGradle') {
+                    script {
+                        def dockerfileContent = """
+                        FROM gradle:jdk21
+                        WORKDIR /app
+                        COPY build/libs/*.jar /app/
+                        EXPOSE 8090
+                        ENTRYPOINT ["java", "-jar", "app.jar"]
+                        """
+                        writeFile file: 'Dockerfile', text: dockerfileContent
+                    }
+                }
+            }
+        }
+
+        stage('Verify Docker Context') {
+            steps {
+                script {
+                    echo 'Verifying Docker contexts...'
+                    sh 'docker context ls'
+                    sh 'docker context use default'
+                }
             }
         }
 
         stage('Publish Image') {
             steps {
                 script {
-                    dir('CA2.Part2/demoWithGradle') {
-                        sh 'chmod -R 755 build/libs'
-                        sh 'ls -l build/libs'
-                        sh 'cp build/libs/*.jar .'
-                        def app = docker.build("mariaparreira/devops_23_24:${env.BUILD_NUMBER}")
-                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
-                            app.push()
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                        dir('Ca2.Part2/demoWithGradle') {
+                            def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            customImage.push()
+                            customImage.push('latest')
                         }
                     }
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    echo 'Running Docker container...'
+                    sh "docker run -d -p 8090:8090 ${DOCKER_IMAGE}:latest"
                 }
             }
         }
@@ -191,38 +252,39 @@ pipeline {
 }
 
 ```
-Step 3: Add Unit Tests
-Make sure you have unit tests in your project. If not, add some basic unit tests. Here is an example of a simple JUnit test:
 
-java
-Copiar código
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+### Step 3: Verify the Pipeline Functionality in Jenkins
 
-public class SimpleTest {
+- Commit the Jenkinsfile2 to the repository.
 
-    @Test
-    public void testSum() {
-        int sum = 1 + 1;
-        assertEquals(2, sum);
-    }
-}
-Final Steps
-Push your changes to the repository:
+- Open docker desktop and login to docker hub.
 
-Ensure that your Jenkinsfile and unit tests are committed and pushed to your repository.
-Tag your repository:
+- Run the pipeline by clicking on "Build Now".
 
-After completing the assignment, tag your repository with ca5:
-bash
-Copiar código
+- Check the results of the pipeline (if successful, the build should be green)
+
+- Check the docker hub for the image created.
+
+- Check the docker desktop for the container running.
+
+- Access the application at http://localhost:8090/basic-0.0.1-SNAPSHOT
+
+- The machines can be verified at the Docker Hub at the following addresses: The image is now available at https://hub.docker.com/r/maria1231483/ca2-part2-jenkins/tags
+
+My RESULTS
+![result2.png](images/result2.png)
+![result3.png](images/result3.png)
+![result4.png](images/result4.png)
+![result5.png](images/result5.png)
+
+
+## Final Steps
+
+- Push your changes to the repository.
+
+- Tag your repository:
+```bash
+
 git tag ca5
 git push origin ca5
-Run the Jenkins Jobs:
-
-Go to Jenkins and run the jobs to see if everything is set up correctly and the pipeline runs smoothly.
-By following these steps, you should be able to set up your Jenkins pipelines for both the Gradle basic demo project and the Spring Boot application. Let me know if you need any further assistance!
-
-
-
-
+```
