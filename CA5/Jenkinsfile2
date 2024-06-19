@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'docker-credentials'
-        DOCKER_IMAGE = '1231843/ca2-part2-jenkins'
+        DOCKER_IMAGE = 'maria1231483/ca2-part2-jenkins'
         DOCKER_TAG = "${env.BUILD_ID}"
     }
 
