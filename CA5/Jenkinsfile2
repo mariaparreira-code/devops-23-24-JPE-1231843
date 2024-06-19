@@ -77,7 +77,7 @@ pipeline {
                         def dockerfileContent = """
                         FROM gradle:jdk21
                         WORKDIR /app
-                        COPY build/libs/*.jar app.jar
+                        COPY build/libs/*.jar /app/
                         EXPOSE 8080
                         ENTRYPOINT ["java", "-jar", "app.jar"]
                         """
