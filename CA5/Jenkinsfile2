@@ -87,6 +87,20 @@ pipeline {
             }
         }
 
+         stage('Publish Image') {
+                    steps {
+                        script {
+                            docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_CREDENTIALS_ID}") {
+                                dir('CA5') {
+                                    def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                                    customImage.push()
+                                    customImage.push('latest')
+                                }
+                            }
+                        }
+                    }
+                }
+
         stage('Run Container') {
             steps {
                 script {
