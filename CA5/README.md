@@ -207,7 +207,7 @@ pipeline {
                         FROM gradle:jdk21
                         WORKDIR /app
                         COPY build/libs/*.jar /app/
-                        EXPOSE 8090
+                        EXPOSE 8080
                         ENTRYPOINT ["java", "-jar", "app.jar"]
                         """
                         writeFile file: 'Dockerfile', text: dockerfileContent
@@ -244,7 +244,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Docker container...'
-                    sh "docker run -d -p 8090:8090 ${DOCKER_IMAGE}:latest"
+                    sh "docker run -d -p 8080:8080 ${DOCKER_IMAGE}:latest"
                 }
             }
         }
@@ -267,7 +267,7 @@ pipeline {
 
 - Check the docker desktop for the container running.
 
-- Access the application at http://localhost:8090/basic-0.0.1-SNAPSHOT
+- Access the application at http://localhost:8080/basic-0.0.1-SNAPSHOT
 
 - The machines can be verified at the Docker Hub at the following addresses: The image is now available at https://hub.docker.com/r/maria1231483/ca2-part2-jenkins/tags
 
